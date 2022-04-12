@@ -1,3 +1,26 @@
+## Migrations
+
+### Create migrations with:
+
+```
+npx typeorm migration:generate -n UserData -d src/migrations
+```
+
+Change `UserData` to something else.
+
+
+### Applies migrations
+
+Before runing the migration's command below, make sure you compiled the code with `npm run build`. We need
+this step because the migration runner reads from the `dist` folder. 
+
+```
+npx typeorm migration:run
+```
+
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>

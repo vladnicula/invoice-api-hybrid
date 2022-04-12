@@ -5,11 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import sqlite3 from 'sqlite3'
 
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-
+import { ThrottlerModule } from '@nestjs/throttler';
 
 import configuration from './config/configuration';
-
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -27,15 +25,7 @@ import { UsersModule } from './users/users.modules';
       ttl: 60,
       limit: 10
     }),
-    TypeOrmModule.forRoot({
-      type: "sqlite",
-      driver: sqlite3,
-      database: "invoice-app-db",
-      synchronize: true,
-      entities: [
-        User
-      ]
-    }),
+    TypeOrmModule.forRoot(),
     UsersModule
   ],
   controllers: [AppController],
