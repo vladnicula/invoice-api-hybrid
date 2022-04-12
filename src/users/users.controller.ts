@@ -1,6 +1,6 @@
-import { Controller, Get, HttpCode, Param, Query, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { query, Response } from 'express';
+import { Response } from 'express';
 
 @Controller()
 export class UsersController {
