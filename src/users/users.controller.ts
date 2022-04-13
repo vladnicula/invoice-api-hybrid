@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common
 import { UsersService } from './users.service';
 import { Response, Request } from 'express';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller()
@@ -16,6 +16,7 @@ export class UsersController {
     }
 
     @Post('/users')
+    @ApiBody({ type: CreateUserDTO })
     async createUser(@Res() res: Response, @Body() createUserDTO: CreateUserDTO) {
         console.log({createUserDTO})
         const user = await this.usersService.create(createUserDTO)

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Res, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
@@ -21,6 +21,7 @@ export class InvoicesController {
     }
 
     @Post('/')
+    @ApiBody({ type: CreateInvoiceDTO })
     async createInvoice(
         @Req() req: Request, 
         @Res() res: Response, 

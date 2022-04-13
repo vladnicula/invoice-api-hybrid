@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { Response } from 'express'
 import { CreateClientDTO } from './dto/create-client.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiBearerAuth()
@@ -19,6 +19,7 @@ export class ClientsController {
     }
 
     @Post('/')
+    @ApiBody({ type: CreateClientDTO })
     async createClient(@Res() res: Response, @Body() createClientDTO: CreateClientDTO) {
         const client = await this.clientsService.create(createClientDTO)
         return res.json({client});
