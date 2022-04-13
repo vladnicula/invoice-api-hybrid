@@ -1,6 +1,6 @@
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
 import { UserEntity } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity()
 export class ClientEntity {
@@ -25,13 +25,14 @@ export class ClientEntity {
   @Column()
   address: string;
 
-  @Column()
-  @ManyToOne(() => UserEntity, user => user.clients, {
+  @ManyToOne((type) => UserEntity, user => user.clients, {
     onDelete: "CASCADE"
   })
   user: UserEntity;
 
   @Column()
-  @OneToMany(() => InvoiceEntity, invocie => invocie.client)
-  invoices: InvoiceEntity;
+  userId: string;
+
+  @OneToMany((type) => InvoiceEntity, invocie => invocie.client)
+  invoices: InvoiceEntity[];
 }

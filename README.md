@@ -18,6 +18,17 @@ this step because the migration runner reads from the `dist` folder.
 npx typeorm migration:run
 ```
 
+## Curl helpers
+
+### Getting an auth token.
+
+```
+curl -X 'POST' \
+  'http://localhost:3000/auth/login' \
+  -d '{"username":"vladnicula@gmail.com", "password": "Test01$" }' \
+  -H "Content-Type: application/json"
+```
+
 
 
 

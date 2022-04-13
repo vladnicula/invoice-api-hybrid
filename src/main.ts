@@ -11,7 +11,10 @@ async function bootstrap() {
     .setDescription('The hello API description')
     .setVersion('1.0')
     .addTag('hello')
+    .addBearerAuth()
     .build();
+
+    
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 

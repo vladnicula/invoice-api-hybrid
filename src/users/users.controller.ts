@@ -1,7 +1,9 @@
-import { Body, Controller, Get, HttpCode, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller()
 export class UsersController {
@@ -18,5 +20,12 @@ export class UsersController {
         console.log({createUserDTO})
         const user = await this.usersService.create(createUserDTO)
         return res.json({user});
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    getProfile(@Req() req: Request) {
+      return req.user;
     }
 } 
