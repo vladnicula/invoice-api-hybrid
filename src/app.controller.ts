@@ -4,7 +4,7 @@ import { Response, Request as ExpressRequest } from 'express';
 
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
-import { User } from './users/user.entity';
+import { UserEntity } from './users/user.entity';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Controller()
@@ -21,7 +21,7 @@ export class AppController {
   @Post('auth/login')
   async login(@Request() req: ExpressRequest) {
     // force cast as we know we get the right thing from the LocalAuthGuard
-    return this.authService.login(req.user as User)
+    return this.authService.login(req.user as UserEntity)
   }
 
   @UseGuards(JwtAuthGuard)

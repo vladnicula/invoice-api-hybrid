@@ -13,6 +13,8 @@ import { AppService } from './app.service';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { InvoicesModule } from './invoices/invoices.module';
+import { ClientsModule } from './clients/clients.module';
 
 
 @Module({
@@ -27,6 +29,8 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(),
     AuthModule,
     UsersModule,
+    InvoicesModule,
+    ClientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
