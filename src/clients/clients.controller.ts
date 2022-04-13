@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { Response } from 'express'
-import { CreateClientDTO } from './dto/create-client-dto';
+import { CreateClientDTO } from './dto/create-client.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
