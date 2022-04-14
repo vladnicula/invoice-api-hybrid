@@ -51,7 +51,7 @@ export class InvoicesController {
         @Body() createInvoiceDTO: CreateInvoiceDTO
     ) {
         const userId = (req.user as {id: string}).id;
-        const invoice = await this.invoicesService.create(createInvoiceDTO, userId)
+        const invoice = await this.invoicesService.create(userId, createInvoiceDTO)
         return res.json({invoice});
     }
 }

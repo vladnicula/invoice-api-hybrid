@@ -74,7 +74,7 @@ export class ClientsService {
         });
     }
  
-    async create(createClientDTO: CreateClientDTO, userId: string) {
+    async create(userId: string, createClientDTO: CreateClientDTO) {
         const newClient = await this.clientsRepository.create()
         newClient.contactName = createClientDTO.contactName;
         newClient.contactEmail = createClientDTO.contactEmail;

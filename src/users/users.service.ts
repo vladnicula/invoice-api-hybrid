@@ -30,6 +30,12 @@ export class UsersService {
         await this.usersRepository.delete(id);
     }
 
+    async removeByEmail(email: string) {
+        await this.usersRepository.delete({
+            email
+        });
+    }
+
     async create(userDTO: CreateUserDTO) {
         const newUser = await this.usersRepository.create()
         newUser.firstName = userDTO.firstName;

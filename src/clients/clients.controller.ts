@@ -59,7 +59,7 @@ export class ClientsController {
     @ApiBody({ type: CreateClientDTO })
     async createClient(@Req() req: Request, @Res() res: Response, @Body() createClientDTO: CreateClientDTO) {
         const userId = (req.user as {id: string}).id;
-        const client = await this.clientsService.create(createClientDTO, userId)
+        const client = await this.clientsService.create(userId, createClientDTO)
         return res.json({client});
     }
 

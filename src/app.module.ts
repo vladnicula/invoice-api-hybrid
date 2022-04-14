@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { ClientsModule } from './clients/clients.module';
+import { InvoiceAppSeederModule } from './invoice-app-seeder/invoice-app-seeder.module';
 
 
 @Module({
@@ -30,6 +31,7 @@ import { ClientsModule } from './clients/clients.module';
     UsersModule,
     InvoicesModule,
     ClientsModule,
+    InvoiceAppSeederModule,
   ],
   providers: [AppService],
 })

@@ -23,7 +23,7 @@ export class InvoicesService {
         });
     }
 
-    async create(createInvoiceDTO: CreateInvoiceDTO, userId: string) {
+    async create(userId: string, createInvoiceDTO: CreateInvoiceDTO) {
         let newInvoice: InvoiceEntity;
         await getManager().transaction(async (transactionalEntityManager) => {
             newInvoice = await transactionalEntityManager.create(InvoiceEntity)
