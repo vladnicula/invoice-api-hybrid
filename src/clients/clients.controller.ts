@@ -14,8 +14,12 @@ export class ClientsController {
     constructor(private readonly  clientsService: ClientsService) {}
 
     @Get('/')
-    async getClients(@Res() res: Response) {
-        const clients = await this.clientsService.findAll();
+    async getClients(
+        @Req() req: Request, 
+        @Res() res: Response
+    ) {
+        const userId = (req.user as {id: string}).id;
+        const clients = await this.clientsService.findByUserId(userId);
         return res.json({clients, total: clients.length});
     }
     

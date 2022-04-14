@@ -14,6 +14,14 @@ export class ClientsService {
         return this.clientsRepository.find();
     }
 
+    findByUserId(userId: string) {
+        return this.clientsRepository.find({
+            where: {
+                userId
+            }
+        });
+    }
+ 
     async create(createClientDTO: CreateClientDTO, userId: string) {
         const newClient = await this.clientsRepository.create()
         newClient.contactName = createClientDTO.contactName;

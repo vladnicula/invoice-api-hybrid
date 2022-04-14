@@ -1,6 +1,16 @@
 import { ClientEntity } from 'src/clients/client.entity';
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+
+export class UserCompanyEntityType {
+  name: string;
+
+  taxCode: string;
+
+  iban: string;
+
+  address: string;
+}
 
 @Entity()
 export class UserEntity {
@@ -19,8 +29,8 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column('simple-json', { nullable: true })
+  company: UserCompanyEntityType;
 
   @OneToMany((type) => ClientEntity, client => client.user)
   clients: ClientEntity[]
