@@ -1,5 +1,12 @@
 ## Migrations
 
+TLDR: 
+```
+npm run build && npx typeorm migration:generate -n NAME && npm run build && npx typeorm migration:run
+```
+
+edit `name` to something relevant for the migration
+
 ### Create migrations with:
 
 ```

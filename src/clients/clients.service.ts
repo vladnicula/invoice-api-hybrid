@@ -21,6 +21,15 @@ export class ClientsService {
             }
         });
     }
+
+    findByUserIdSummary(userId: string) {
+        return this.clientsRepository.find({
+            where: {
+                userId
+            },
+            select: ['name','contactName', 'id']
+        });
+    }
  
     async create(createClientDTO: CreateClientDTO, userId: string) {
         const newClient = await this.clientsRepository.create()

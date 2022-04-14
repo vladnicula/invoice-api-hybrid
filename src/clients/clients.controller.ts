@@ -30,4 +30,16 @@ export class ClientsController {
         const client = await this.clientsService.create(createClientDTO, userId)
         return res.json({client});
     }
+
+
+    @Get('/names')
+    async getSummary(
+        @Req() req: Request, 
+        @Res() res: Response
+    ) {
+        const userId = (req.user as {id: string}).id;
+        const clients = await this.clientsService.findByUserIdSummary(userId);
+        return res.json({clients});
+    }
+
 }
