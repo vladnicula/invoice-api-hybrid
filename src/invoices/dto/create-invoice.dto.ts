@@ -1,9 +1,11 @@
+export class CreateInvoiceItemsDTO  {
+  description: string
+  price: number
+}
+
 export class CreateInvoiceDTO {
   clientId: string;
-  date: string;
-  dueDate: string;
-  items: {
-    description: string,
-    price: number
-  }[];
+  dateTS: string;
+  dueDateTS: string;
+  items: CreateInvoiceItemsDTO[];
 }

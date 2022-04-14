@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/users/user.entity';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { InvoiceEntity } from './invoice.entity';
 
@@ -14,18 +14,11 @@ export class InvoiceItemEntity {
   price: number
 
   // relations
-  
-  @ManyToOne((type) => InvoiceEntity, invoice => invoice.items, {
+  @ManyToOne((type) => InvoiceEntity, invoice => invoice, {
     onDelete: "CASCADE"
   })
   invoice: InvoiceEntity;
+  
   @Column()
   invoiceId: string;
-
-  @ManyToOne(() => UserEntity, (user) => user.invoices, {
-    onDelete: 'CASCADE'
-  })
-  user: UserEntity
-  @Column()
-  userId: string
 }

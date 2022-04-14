@@ -29,8 +29,8 @@ export class InvoicesService {
             newInvoice = await transactionalEntityManager.create(InvoiceEntity)
             newInvoice.userId = userId;
             newInvoice.clientId = createInvoiceDTO.clientId;
-            newInvoice.date = createInvoiceDTO.date;
-            newInvoice.dueDate = createInvoiceDTO.dueDate;
+            newInvoice.date = createInvoiceDTO.dateTS;
+            newInvoice.dueDate = createInvoiceDTO.dueDateTS;
             
             await transactionalEntityManager.save(newInvoice)
             let total = 0;
