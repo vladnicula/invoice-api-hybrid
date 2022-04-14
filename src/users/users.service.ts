@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { UserEntity } from './user.entity';
+import { UserCompanyEntityType, UserEntity } from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -40,12 +40,12 @@ export class UsersService {
         return newUser;
     }
 
-    async update(userDTO: UpdateUserDTO) {
-        const existingUser = await this.usersRepository.findOneOrFail(userDTO.id)
-        existingUser.firstName = userDTO.firstName;
-        existingUser.lastName = userDTO.lastName;
-        existingUser.email = userDTO.email;
-        existingUser.password = userDTO.password;
+    async update(userId: string, userDTO: Partial<UpdateUserDTO>) {
+        const existingUser = await this.usersRepository.findOneOrFail(userId)
+        Object.keys(userDTO).forEach((key: keyof Partial<UpdateUserDTO>) => {
+            const value = userDTO[key];
+            existingUser[key] = value as string & UserCompanyEntityType;
+        })
         await this.usersRepository.save(existingUser)
         return existingUser;
     }
