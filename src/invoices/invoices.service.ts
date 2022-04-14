@@ -31,7 +31,9 @@ export class InvoicesService {
             newInvoice.clientId = createInvoiceDTO.clientId;
             newInvoice.date = createInvoiceDTO.dateTS;
             newInvoice.dueDate = createInvoiceDTO.dueDateTS;
-            
+            newInvoice.total = createInvoiceDTO.items.reduce((acc, item) => {
+                return acc + item.price
+            }, 0)
             await transactionalEntityManager.save(newInvoice)
             let total = 0;
             for ( let i = 0; i < createInvoiceDTO.items.length; i += 1 ) {
@@ -43,8 +45,6 @@ export class InvoicesService {
                 total += invoiceItem.price;
                 await transactionalEntityManager.save(invoiceItem)
             }
-
-            newInvoice.total = total;
             await transactionalEntityManager.save(newInvoice)
         })
         

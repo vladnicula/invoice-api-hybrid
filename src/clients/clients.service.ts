@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { InvoiceEntity } from 'src/invoices/invoice.entity';
 import { Repository } from 'typeorm';
 import { ClientEntity } from './client.entity';
-import { SortOptions } from './clients.controller';
 import { CreateClientDTO } from './dto/create-client.dto';
 
 @Injectable()
@@ -11,31 +11,56 @@ export class ClientsService {
     @InjectRepository(ClientEntity)
     private clientsRepository: Repository<ClientEntity>
 
+    @InjectRepository(InvoiceEntity)
+    private invoicesRepository: Repository<InvoiceEntity>
+
     findAll(): Promise<ClientEntity[]> {
         return this.clientsRepository.find();
     }
 
-    findByUserId(userId: string, params: {
+    async findByUserId(userId: string, params: {
         skip?: number, 
         limit?: number, 
         sortBy?: string, 
         sort?: "ASC" | "DESC"
     }) {
-        const { limit, skip, sortBy, sort } = params;
-        const basicOrderOptions: {
-            name?: "ASC" | "DESC" | 1 | -1,
-            contactName?: "ASC" | "DESC" | 1 | -1,
-        } = sortBy ? {
-            [sortBy]: sort
-        } : {};
+        // const { limit, skip, sortBy, sort } = params;
+        // const basicOrderOptions: {
+        //     name?: "ASC" | "DESC" | 1 | -1,
+        //     contactName?: "ASC" | "DESC" | 1 | -1,
+        // } = sortBy ? {
+        //     [sortBy]: sort
+        // } : {};
+
         
-        return this.clientsRepository.find({
-            where: {
-                userId
-            },
-            skip,
-            take: limit,
-            order: basicOrderOptions
+        const clientIdsOfThisUserIdQuery = this.clientsRepository.createQueryBuilder('client')
+            .select("client.id")
+            .where("client.userId = :userId", { userId })
+
+        const invoiceTotalByClientIdQuery = this.invoicesRepository
+            .createQueryBuilder('invoiceTotals')
+            .select("SUM(invoiceTotals.total)", "totalBilled")
+            .addSelect("COUNT(invoiceTotals.id)", "countInvoices")
+            .addSelect("invoiceTotals.clientId", "clientId")
+            .where(`invoiceTotals.clientId IN (${clientIdsOfThisUserIdQuery.getQuery()})`)
+            .groupBy('clientId')
+
+        const clientListQuery = this.clientsRepository
+            .createQueryBuilder('client')
+            .where("client.userId = :userId", { userId: userId} )
+            .leftJoinAndSelect(`(${invoiceTotalByClientIdQuery.getQuery()})`, 'invoiceTotals', 'invoiceTotals.clientId = clientId')
+
+        const results = await clientListQuery.getRawMany();
+
+        return results.map(({clientId, invoiceTotals_id, ...rest}) => {
+            return Object.keys(rest).reduce((acc: Record<string, any>, key) => {
+                if (key.startsWith('client_') ) {
+                    acc[key.replace('client_', '')] = rest[key];
+                } else {
+                    acc[key] = rest[key]
+                }
+                return acc;
+            }, {})
         });
     }
 
