@@ -3,9 +3,9 @@ module.exports = {
     "database": "invoice-app-db",
     "entities": ["dist/**/*.entity{.ts,.js}"],
     "migrations": [
-        "dist/migration/*.js"
+        "dist/migrations/*.js"
     ],
     "cli": {
-        "migrationsDir":  "src/migration"
+        "migrationsDir":  "src/migrations"
     }
 }

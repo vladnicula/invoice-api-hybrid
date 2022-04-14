@@ -30,7 +30,7 @@ export class AuthController {
     @Post('sign-up')
     @ApiBody({ type: UserSignUpDetailsDTO })
     async signUp(@Res() res: Response, @Body() userSignUpDetailsDTO: UserSignUpDetailsDTO) {
-      const user = await this.usersService.update(userSignUpDetailsDTO)
+      const user = await this.usersService.create(userSignUpDetailsDTO)
       return res.json({user});
     }
 }

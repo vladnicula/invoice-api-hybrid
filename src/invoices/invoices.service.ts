@@ -15,6 +15,14 @@ export class InvoicesService {
         return this.invoicesRepository.find();
     }
 
+    findByUserId(userId: string) {
+        return this.invoicesRepository.find({
+            where: {
+                userId: userId
+            }
+        });
+    }
+
     async create(createInvoiceDTO: CreateInvoiceDTO, userId: string) {
         const newInvoice = await this.invoicesRepository.create()
         newInvoice.userId = userId;

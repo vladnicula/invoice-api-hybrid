@@ -10,7 +10,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @Get('/users')
+    @Get('/list')
     async getUsers(@Res() res: Response) {
         const users = await this.usersService.findAll();
         return res.json({users, total: users.length});

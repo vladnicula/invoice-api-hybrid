@@ -16,8 +16,12 @@ export class InvoicesController {
     ) {}
 
     @Get('/')
-    async getInvoices(@Res() res: Response) {
-        const invoices = await this.invoicesService.findAll();
+    async getInvoices(
+        @Req() req: Request, 
+        @Res() res: Response
+    ) {
+        const userId = (req.user as {id: string}).id;
+        const invoices = await this.invoicesService.findByUserId(userId);
         return res.json({invoices, total: invoices.length});
     }
 
