@@ -20,9 +20,7 @@ export class InvoiceEntity {
   total: number;
 
   // relations
-  @OneToMany((type) => InvoiceItemEntity, (entity) => entity.invoice, {
-    eager: true,
-  })
+  @OneToMany((type) => InvoiceItemEntity, (entity) => entity.invoice)
   items: InvoiceItemEntity[]
 
   @ManyToOne((type) => UserEntity, user => user.invoices, {

@@ -1,7 +1,8 @@
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
-import { Repository } from 'typeorm';
 import { ClientEntity } from './client.entity';
 import { CreateClientDTO } from './dto/create-client.dto';
 

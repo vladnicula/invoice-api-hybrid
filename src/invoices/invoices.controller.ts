@@ -1,10 +1,21 @@
 import { Body, Controller, Get, Post, Res, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
 
 import { InvoicesService } from './invoices.service';
+
+export enum SortBy {
+    Date = 'date',
+    DueDate = 'dueDate',
+    Total = 'total'
+}
+
+export enum SortOrder {
+    ASC='ASC',
+    DESC='DESC'
+}
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -16,6 +27,13 @@ export class InvoicesController {
     ) {}
 
     @Get('/')
+    @ApiQuery({ name: 'limit', type: 'string', required: false })
+    @ApiQuery({ name: 'skip', type: 'string', required: false })
+    @ApiQuery({ name: 'startDate', type: 'string', required: false })
+    @ApiQuery({ name: 'endDate', type: 'string', required: false })
+    @ApiQuery({ name: 'clientId', type: 'string', required: false })
+    @ApiQuery({ name: 'sortBy', enum: SortBy, required: false })
+    @ApiQuery({ name: 'sort', enum: SortOrder, required: false })
     async getInvoices(
         @Req() req: Request, 
         @Res() res: Response
