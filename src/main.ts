@@ -7,10 +7,9 @@ async function bootstrap() {
 
   // swagger config
   const config = new DocumentBuilder()
-    .setTitle('Hello example')
-    .setDescription('The hello API description')
+    .setTitle('Invoice API Spring 2022')
+    .setDescription('The practice API for Next/React/Typescript Courses')
     .setVersion('1.0')
-    .addTag('hello')
     .addBearerAuth()
     .build();
 

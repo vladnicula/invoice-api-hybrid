@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Res, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
@@ -8,6 +8,7 @@ import { InvoicesService } from './invoices.service';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@ApiTags('invoices')
 @Controller('invoices')
 export class InvoicesController {
     constructor(

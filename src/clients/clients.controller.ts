@@ -1,12 +1,13 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { Response } from 'express'
+import { Response, Request } from 'express'
 import { CreateClientDTO } from './dto/create-client.dto';
-import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@ApiTags('clients')
 @Controller('clients')
 export class ClientsController {
 
@@ -17,11 +18,12 @@ export class ClientsController {
         const clients = await this.clientsService.findAll();
         return res.json({clients, total: clients.length});
     }
-
+    
     @Post('/')
     @ApiBody({ type: CreateClientDTO })
-    async createClient(@Res() res: Response, @Body() createClientDTO: CreateClientDTO) {
-        const client = await this.clientsService.create(createClientDTO)
+    async createClient(@Req() req: Request, @Res() res: Response, @Body() createClientDTO: CreateClientDTO) {
+        const userId = (req.user as {id: string}).id;
+        const client = await this.clientsService.create(createClientDTO, userId)
         return res.json({client});
     }
 }

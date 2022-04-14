@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response, Request } from 'express';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller()
+@Controller("users")
+@ApiTags("users")
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
@@ -15,17 +16,18 @@ export class UsersController {
         return res.json({users, total: users.length});
     }
 
-    @Post('/users')
-    @ApiBody({ type: CreateUserDTO })
-    async createUser(@Res() res: Response, @Body() createUserDTO: CreateUserDTO) {
-        console.log({createUserDTO})
-        const user = await this.usersService.create(createUserDTO)
+    @Put('/')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @ApiBody({ type: UpdateUserDTO })
+    async updateUser(@Res() res: Response, @Body() updateUserDTO: UpdateUserDTO) {
+        const user = await this.usersService.update(updateUserDTO)
         return res.json({user});
     }
 
+    @Get('profile')
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
-    @Get('profile')
     getProfile(@Req() req: Request) {
       return req.user;
     }

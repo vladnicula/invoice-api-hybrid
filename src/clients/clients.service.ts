@@ -14,7 +14,7 @@ export class ClientsService {
         return this.clientsRepository.find();
     }
 
-    async create(createClientDTO: CreateClientDTO) {
+    async create(createClientDTO: CreateClientDTO, userId: string) {
         const newClient = await this.clientsRepository.create()
         newClient.contactName = createClientDTO.contactName;
         newClient.contactEmail = createClientDTO.contactEmail;
@@ -22,6 +22,7 @@ export class ClientsService {
         newClient.address = createClientDTO.address;
         newClient.iban = createClientDTO.iban;
         newClient.taxCode = createClientDTO.taxCode;
+        newClient.userId = userId;
         await this.clientsRepository.save(newClient)
         return newClient;
     }

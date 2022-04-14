@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserEntity } from './user.entity';
 
 @Injectable()
@@ -37,5 +38,15 @@ export class UsersService {
         newUser.password = userDTO.password;
         await this.usersRepository.save(newUser)
         return newUser;
+    }
+
+    async update(userDTO: UpdateUserDTO) {
+        const existingUser = await this.usersRepository.findOneOrFail(userDTO.id)
+        existingUser.firstName = userDTO.firstName;
+        existingUser.lastName = userDTO.lastName;
+        existingUser.email = userDTO.email;
+        existingUser.password = userDTO.password;
+        await this.usersRepository.save(existingUser)
+        return existingUser;
     }
 }
