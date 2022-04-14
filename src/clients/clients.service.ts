@@ -25,44 +25,66 @@ export class ClientsService {
         sortBy?: string, 
         sort?: "ASC" | "DESC"
     }) {
-        // const { limit, skip, sortBy, sort } = params;
-        // const basicOrderOptions: {
-        //     name?: "ASC" | "DESC" | 1 | -1,
-        //     contactName?: "ASC" | "DESC" | 1 | -1,
-        // } = sortBy ? {
-        //     [sortBy]: sort
-        // } : {};
-
-        
-        const clientIdsOfThisUserIdQuery = this.clientsRepository.createQueryBuilder('client')
+        const { sortBy, sort, skip, limit } = params;
+        let clientIdsOfThisUserIdQuery = this.clientsRepository.createQueryBuilder('client')
             .select("client.id")
             .where("client.userId = :userId", { userId })
 
         const invoiceTotalByClientIdQuery = this.invoicesRepository
             .createQueryBuilder('invoiceTotals')
             .select("SUM(invoiceTotals.total)", "totalBilled")
-            .addSelect("COUNT(invoiceTotals.id)", "countInvoices")
+            .addSelect("COUNT(invoiceTotals.id)", "invoiceCount")
             .addSelect("invoiceTotals.clientId", "clientId")
             .where(`invoiceTotals.clientId IN (${clientIdsOfThisUserIdQuery.getQuery()})`)
             .groupBy('clientId')
 
-        const clientListQuery = this.clientsRepository
+        let clientListQuery = this.clientsRepository
             .createQueryBuilder('client')
             .where("client.userId = :userId", { userId: userId} )
-            .leftJoinAndSelect(`(${invoiceTotalByClientIdQuery.getQuery()})`, 'invoiceTotals', 'invoiceTotals.clientId = clientId')
+            .groupBy('client.id')
+
+        if ( sortBy === 'name' || sortBy === 'contactName' ) {
+            clientListQuery = clientListQuery
+                .orderBy(`client.${sortBy}`, sort ?? "ASC")
+        }
+
+        clientListQuery = clientListQuery.leftJoinAndSelect(`(${invoiceTotalByClientIdQuery.getQuery()})`, 'invoiceTotals', 'invoiceTotals.clientId = client.id')
+           
+        if ( sortBy === 'invoiceCount' || sortBy === 'totalBilled' ) {
+            clientListQuery = clientListQuery
+                .orderBy(`invoiceTotals.${sortBy}`, sort ?? "ASC")
+        }
+
+        const totalCount = await clientListQuery.getCount();
+
+        if ( skip !== undefined ) {
+            clientListQuery = clientListQuery
+                .offset(skip)
+        }
+
+        if ( limit !== undefined ) {
+            clientListQuery = clientListQuery
+                .limit(limit)
+        }
 
         const results = await clientListQuery.getRawMany();
 
-        return results.map(({clientId, invoiceTotals_id, ...rest}) => {
-            return Object.keys(rest).reduce((acc: Record<string, any>, key) => {
-                if (key.startsWith('client_') ) {
-                    acc[key.replace('client_', '')] = rest[key];
-                } else {
-                    acc[key] = rest[key]
-                }
-                return acc;
-            }, {})
-        });
+        return {
+            total: totalCount,
+            skip,
+            limit,
+            // debugQuery: clientListQuery.getQueryAndParameters(),
+            clients: results.map(({clientId, invoiceTotals_id, ...rest}) => {
+                return Object.keys(rest).reduce((acc: Record<string, any>, key) => {
+                    if (key.startsWith('client_') ) {
+                        acc[key.replace('client_', '')] = rest[key];
+                    } else {
+                        acc[key] = rest[key]
+                    }
+                    return acc;
+                }, {})
+            })
+        };
     }
 
     findByUserIdSummary(userId: string) {

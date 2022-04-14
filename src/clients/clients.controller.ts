@@ -46,13 +46,13 @@ export class ClientsController {
         const parsedLimit = limit ? parseInt(limit, 10) : 10;
         const parsedSort = sort === 'ASC' ? 'ASC' : 'DESC'
 
-        const clients = await this.clientsService.findByUserId(userId, {
+        const response = await this.clientsService.findByUserId(userId, {
             skip: parsedSkip, 
             limit: parsedLimit, 
             sort: parsedSort, 
             sortBy
         });
-        return res.json({clients, total: clients.length});
+        return res.json(response);
     }
     
     @Post('/')

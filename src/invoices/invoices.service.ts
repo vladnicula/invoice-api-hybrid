@@ -35,14 +35,12 @@ export class InvoicesService {
                 return acc + item.price
             }, 0)
             await transactionalEntityManager.save(newInvoice)
-            let total = 0;
             for ( let i = 0; i < createInvoiceDTO.items.length; i += 1 ) {
                 const itItem = createInvoiceDTO.items[i];
                 const invoiceItem = await transactionalEntityManager.create(InvoiceItemEntity)
                 invoiceItem.description = itItem.description
                 invoiceItem.price = itItem.price
                 invoiceItem.invoiceId = newInvoice.id;
-                total += invoiceItem.price;
                 await transactionalEntityManager.save(invoiceItem)
             }
             await transactionalEntityManager.save(newInvoice)
