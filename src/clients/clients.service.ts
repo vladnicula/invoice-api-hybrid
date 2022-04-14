@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClientEntity } from './client.entity';
+import { SortOptions } from './clients.controller';
 import { CreateClientDTO } from './dto/create-client.dto';
 
 @Injectable()
@@ -14,11 +15,27 @@ export class ClientsService {
         return this.clientsRepository.find();
     }
 
-    findByUserId(userId: string) {
+    findByUserId(userId: string, params: {
+        skip?: number, 
+        limit?: number, 
+        sortBy?: string, 
+        sort?: "ASC" | "DESC"
+    }) {
+        const { limit, skip, sortBy, sort } = params;
+        const basicOrderOptions: {
+            name?: "ASC" | "DESC" | 1 | -1,
+            contactName?: "ASC" | "DESC" | 1 | -1,
+        } = sortBy ? {
+            [sortBy]: sort
+        } : {};
+        
         return this.clientsRepository.find({
             where: {
                 userId
-            }
+            },
+            skip,
+            take: limit,
+            order: basicOrderOptions
         });
     }
 
