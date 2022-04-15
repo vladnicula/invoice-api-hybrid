@@ -1,9 +1,13 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
 import { UserEntity } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 
+@ObjectType()
 @Entity()
 export class ClientEntity {
+  @Field(type => ID)
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

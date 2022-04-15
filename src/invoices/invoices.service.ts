@@ -15,6 +15,10 @@ export class InvoicesService {
         return this.invoicesRepository.find();
     }
 
+    async findById (id: string) {
+        return this.invoicesRepository.findOne(id)
+    }
+
     async findByUserId(userId: string, params: {
         skip?: number,
         limit?: number,

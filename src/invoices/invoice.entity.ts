@@ -1,11 +1,14 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { ClientEntity } from 'src/clients/client.entity';
 import { UserEntity } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { InvoiceItemEntity } from './invoice-item.entity';
 
+@ObjectType()
 @Entity()
 export class InvoiceEntity {
+  @Field(type => ID)
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

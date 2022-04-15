@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserCompanyEntityType, UserEntity } from './user.entity';
@@ -10,8 +10,14 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>
 
-    findAll(): Promise<UserEntity[]> {
-        return this.usersRepository.find();
+    findAll(params?: {selectFields?:(keyof UserEntity)[]}): Promise<UserEntity[]> {
+        const { selectFields } = params ?? {}
+        const findQueryParams: FindManyOptions<UserEntity> = {}
+
+        if ( selectFields ) {
+            findQueryParams.select = selectFields;
+        }
+        return this.usersRepository.find(findQueryParams);
     }
 
     findOne(id: string): Promise<UserEntity | undefined> {

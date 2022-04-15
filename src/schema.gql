@@ -1,0 +1,59 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type InvoiceItemEntity {
+  id: ID!
+  description: String!
+  price: Float!
+  invoice: InvoiceEntity!
+  invoiceId: String!
+}
+
+type InvoiceEntity {
+  id: ID!
+  date: String!
+  dueDate: String!
+  total: Float!
+  items: [InvoiceItemEntity!]!
+  user: UserEntity!
+  userId: String!
+  client: ClientEntity!
+  clientId: String!
+}
+
+type ClientEntity {
+  id: ID!
+  name: String!
+  contactName: String!
+  contactEmail: String!
+  taxCode: String!
+  iban: String!
+  address: String!
+  user: UserEntity!
+  userId: String!
+  invoices: [InvoiceEntity!]!
+}
+
+type UserCompanyEntityType {
+  name: String!
+  taxCode: String!
+  iban: String!
+  address: String!
+}
+
+type UserEntity {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  company: UserCompanyEntityType!
+}
+
+type Query {
+  user(id: String!): UserEntity!
+  users: [UserEntity!]!
+  invoice(id: String!): InvoiceEntity!
+  invoices: [InvoiceEntity!]!
+}
