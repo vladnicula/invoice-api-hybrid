@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getManager, Repository } from 'typeorm';
+import { FindManyOptions, getManager, Repository } from 'typeorm';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
 import { InvoiceItemEntity } from './invoice-item.entity';
 import { InvoiceEntity } from './invoice.entity';
@@ -15,12 +15,63 @@ export class InvoicesService {
         return this.invoicesRepository.find();
     }
 
-    findByUserId(userId: string) {
-        return this.invoicesRepository.find({
-            where: {
-                userId: userId
-            }
-        });
+    async findByUserId(userId: string, params: {
+        skip?: number,
+        limit?: number,
+        sort?: "ASC" | "DESC",
+        sortBy?: string,
+        startDate?: string, 
+        endDate?: string, 
+        clientId?: string, 
+    }) {
+        const {
+            skip, limit, sort, sortBy, startDate, endDate, clientId
+        } = params;
+
+        let invoicListingQuery = this.invoicesRepository
+            .createQueryBuilder('invoices')
+            .select("invoices.id", 'id')
+            .addSelect("invoices.date", 'date')
+            .addSelect("invoices.dueDate", 'dueDate')
+            .addSelect("invoices.total", 'total')
+            .addSelect("clients.name", 'companyName')
+            .addSelect("clients.id", 'clientId')
+            .addSelect("clients.contactName", 'contactName')
+            .addSelect("clients.contactEmail", 'contactEmail')
+            .where("invoices.userId = :userId", { userId: userId} )
+
+        if ( startDate ) {
+            invoicListingQuery = invoicListingQuery
+                .andWhere("invoices.date >= :startDate", {startDate})
+        }
+
+        if ( endDate ) {
+            invoicListingQuery = invoicListingQuery
+                .andWhere("invoices.date < :endDate", {endDate})
+        }
+
+        if ( clientId ) {
+            invoicListingQuery = invoicListingQuery
+                .andWhere("invoices.clientId = :clientId", {clientId})
+        }
+
+        invoicListingQuery = invoicListingQuery    
+            .leftJoin('client_entity', 'clients', 'clients.id=invoices.clientId')
+
+        const totalMatches = await invoicListingQuery.getCount();
+
+        invoicListingQuery = invoicListingQuery    
+            .offset(skip)
+            .limit(limit)
+
+
+        if ( sortBy ) {
+            invoicListingQuery = invoicListingQuery.orderBy(
+                sortBy, sort
+            )
+        }
+
+        return { invoices: await invoicListingQuery.getRawMany(), total: totalMatches}
     }
 
     async create(userId: string, createInvoiceDTO: CreateInvoiceDTO) {

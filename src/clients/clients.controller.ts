@@ -41,7 +41,6 @@ export class ClientsController {
         const userId = (req.user as {id: string}).id;
 
         // TODO I don't have time to learn proper validation layer stuff, so I'm gonna parse things here
-
         const parsedSkip = skip ? parseInt(skip, 10) : 0;
         const parsedLimit = limit ? parseInt(limit, 10) : 10;
         const parsedSort = sort === 'ASC' ? 'ASC' : 'DESC'

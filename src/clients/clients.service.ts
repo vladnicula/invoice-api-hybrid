@@ -48,7 +48,11 @@ export class ClientsService {
                 .orderBy(`client.${sortBy}`, sort ?? "ASC")
         }
 
-        clientListQuery = clientListQuery.leftJoinAndSelect(`(${invoiceTotalByClientIdQuery.getQuery()})`, 'invoiceTotals', 'invoiceTotals.clientId = client.id')
+        clientListQuery = clientListQuery.leftJoinAndSelect(
+            `(${invoiceTotalByClientIdQuery.getQuery()})`, 
+            'invoiceTotals', 
+            'invoiceTotals.clientId = client.id'
+        )
            
         if ( sortBy === 'invoiceCount' || sortBy === 'totalBilled' ) {
             clientListQuery = clientListQuery
