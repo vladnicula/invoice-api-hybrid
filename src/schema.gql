@@ -14,7 +14,7 @@ type InvoiceListInfo {
   total: Int!
   skip: Int!
   limit: Int!
-  invoices: [InvoiceEntity!]!
+  results: [InvoiceEntity!]!
 }
 
 type InvoiceEntity {
@@ -29,8 +29,17 @@ type InvoiceEntity {
   clientId: String!
 }
 
+type ClientListInfo {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  results: [ClientEntity!]!
+}
+
 type ClientEntity {
   id: ID!
+  totalBilled: Float!
+  invoiceCount: Int!
   name: String!
   contactName: String!
   contactEmail: String!
@@ -39,7 +48,12 @@ type ClientEntity {
   address: String!
   user: UserEntity!
   userId: String!
-  invoices: [InvoiceEntity!]!
+  invoices(limit: Int = 10, sort: SortOrder, sortBy: String, startDate: String, endDate: String): [InvoiceEntity!]!
+}
+
+enum SortOrder {
+  ASC
+  DESC
 }
 
 type UserCompanyEntityType {
@@ -63,9 +77,6 @@ type Query {
   users: [UserEntity!]!
   invoice(id: String!): InvoiceEntity!
   invoices(limit: Int = 10, skip: Int = 0, sort: SortOrder, sortBy: String, startDate: String, endDate: String, clientId: String): InvoiceListInfo!
-}
-
-enum SortOrder {
-  ASC
-  DESC
+  client(id: String!): ClientEntity!
+  clients(limit: Int = 10, skip: Int = 0, sort: SortOrder, sortBy: String): ClientListInfo!
 }

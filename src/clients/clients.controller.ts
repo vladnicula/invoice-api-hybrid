@@ -4,17 +4,13 @@ import { Response, Request } from 'express'
 import { CreateClientDTO } from './dto/create-client.dto';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
+import { SortOrder } from 'src/common/entity/graphql-sort-order';
 
 export enum SortOptions {
     Name = 'name',
     ContactName = 'contactName',
     InvoiceCount = 'invoiceCount',
     TotalBilled = 'totalBilled'
-}
-
-export enum SortOrder {
-    ASC = 'ASC',
-    DESC = 'DESC',
 }
 
 @ApiBearerAuth()

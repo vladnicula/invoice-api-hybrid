@@ -14,7 +14,7 @@ export class InvoiceListInfo {
     skip: number;
     @Field(type => Int)
     limit: number;
-    invoices: InvoiceEntity[]
+    results: InvoiceEntity[]
 }
 
 @ObjectType()

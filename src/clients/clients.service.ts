@@ -32,7 +32,8 @@ export class ClientsService {
         skip?: number, 
         limit?: number, 
         sortBy?: string, 
-        sort?: "ASC" | "DESC"
+        sort?: "ASC" | "DESC",
+        selectFields?: (keyof ClientEntity)[]
     }) {
         const { sortBy, sort, skip, limit } = params;
         let clientIdsOfThisUserIdQuery = this.clientsRepository.createQueryBuilder('client')
@@ -87,7 +88,7 @@ export class ClientsService {
             skip,
             limit,
             // debugQuery: clientListQuery.getQueryAndParameters(),
-            clients: results.map(({clientId, invoiceTotals_id, ...rest}) => {
+            results: results.map(({clientId, invoiceTotals_id, ...rest}) => {
                 return Object.keys(rest).reduce((acc: Record<string, any>, key) => {
                     if (key.startsWith('client_') ) {
                         acc[key.replace('client_', '')] = rest[key];

@@ -5,22 +5,11 @@ import * as queryFields from 'graphql-fields'
 
 import { GraphQLCurrentUser } from "src/auth/decorators/graphql-current-user.decorator";
 import { GqlAuthGuard } from "src/auth/guards/graphql-jwt-auth.guard";
-import { ClientsService } from "src/clients/clients.service";
+import { SortOrder } from "src/common/entity/graphql-sort-order";
 import { InvoiceItemEntity } from "./invoice-item.entity";
 
 import { InvoiceEntity, InvoiceListInfo } from "./invoice.entity";
 import { InvoicesService } from "./invoices.service";
-
-enum SortOrder {
-  ASC = 'ASC',
-  DESC = 'DESC'
-}
-
-registerEnumType(
-  SortOrder, {
-    name: "SortOrder"
-  }
-)
 
 @UseGuards(GqlAuthGuard)
 @Resolver(of => InvoiceEntity)
@@ -46,7 +35,7 @@ export class InvoicesResolver {
     @Args("endDate", { type: () => String, nullable: true }) endDate?: string, 
     @Args("clientId", { type: () => String, nullable: true }) clientId?: string, 
   ) {
-    const invoiceSelectFields = Object.keys(queryFields(queryInfo).invoices) as (keyof InvoiceEntity)[]
+    const invoiceSelectFields = Object.keys(queryFields(queryInfo).results) as (keyof InvoiceEntity)[]
     const invoices = await this.invoicesService.findByUserId(user.id, {
       limit, skip, sort, sortBy, startDate, endDate, clientId
     });
