@@ -127,4 +127,15 @@ export class InvoicesService {
             }
         })).client
     }
+
+    async getItemsOfInvoiceByUserIdAndInvoiceId (userId: string, invoiceId: string) {
+        return (await this.invoicesRepository.findOneOrFail({
+            select: ['id', 'items'],
+            relations: ['items'],
+            where: {
+                userId,
+                id: invoiceId
+            }
+        })).items
+    }
 }

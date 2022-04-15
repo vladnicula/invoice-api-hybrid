@@ -6,6 +6,7 @@ import * as queryFields from 'graphql-fields'
 import { GraphQLCurrentUser } from "src/auth/decorators/graphql-current-user.decorator";
 import { GqlAuthGuard } from "src/auth/guards/graphql-jwt-auth.guard";
 import { ClientsService } from "src/clients/clients.service";
+import { InvoiceItemEntity } from "./invoice-item.entity";
 
 import { InvoiceEntity, InvoiceListInfo } from "./invoice.entity";
 import { InvoicesService } from "./invoices.service";
@@ -60,5 +61,15 @@ export class InvoicesResolver {
   ) {
     const client = await this.invoicesService.getClientOfInvoiceByUserIdAndInvoiceId(user.id, invoice.id)
     return client;
+  }
+
+  @ResolveField()
+  async items (
+    @Parent() invoice: InvoiceItemEntity,
+    @GraphQLCurrentUser() user: {id: string},
+    @Info() queryInfo,
+  ) {
+    const items = await this.invoicesService.getItemsOfInvoiceByUserIdAndInvoiceId(user.id, invoice.id)
+    return items;
   }
 }
