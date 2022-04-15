@@ -3,7 +3,7 @@ import { ClientsService } from './clients.service';
 import { Response, Request } from 'express'
 import { CreateClientDTO } from './dto/create-client.dto';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
 
 export enum SortOptions {
     Name = 'name',

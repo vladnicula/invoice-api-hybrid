@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClientEntity } from 'src/clients/client.entity';
 import { FindManyOptions, getManager, Repository } from 'typeorm';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
 import { InvoiceItemEntity } from './invoice-item.entity';
@@ -11,12 +12,24 @@ export class InvoicesService {
     @InjectRepository(InvoiceEntity)
     private invoicesRepository: Repository<InvoiceEntity>
 
+    @InjectRepository(ClientEntity)
+    private clientsRepository: Repository<ClientEntity>
+
     findAll(): Promise<InvoiceEntity[]> {
         return this.invoicesRepository.find();
     }
 
     async findById (id: string) {
         return this.invoicesRepository.findOne(id)
+    }
+
+    async findByUserIdAndId (userId: string, id: string) {
+        return this.invoicesRepository.findOne({
+            where: {
+                id,
+                userId
+            }
+        })
     }
 
     async findByUserId(userId: string, params: {
@@ -29,7 +42,7 @@ export class InvoicesService {
         clientId?: string, 
     }) {
         const {
-            skip, limit, sort, sortBy, startDate, endDate, clientId
+            skip = 0, limit = 100, sort, sortBy, startDate, endDate, clientId
         } = params;
 
         let invoicListingQuery = this.invoicesRepository
@@ -75,7 +88,7 @@ export class InvoicesService {
             )
         }
 
-        return { invoices: await invoicListingQuery.getRawMany(), total: totalMatches}
+        return { invoices: await invoicListingQuery.getRawMany(), total: totalMatches, skip, limit}
     }
 
     async create(userId: string, createInvoiceDTO: CreateInvoiceDTO) {
@@ -102,5 +115,27 @@ export class InvoicesService {
         })
         
         return newInvoice;
+    }
+
+    async getClientOfInvoiceByUserIdAndInvoiceId (userId: string, invoiceId: string) {
+        return (await this.invoicesRepository.findOneOrFail({
+            select: ['id', 'client'],
+            relations: ['client'],
+            where: {
+                userId,
+                id: invoiceId
+            }
+        })).client
+    }
+
+    async getItemsOfInvoiceByUserIdAndInvoiceId (userId: string, invoiceId: string) {
+        return (await this.invoicesRepository.findOneOrFail({
+            select: ['id', 'items'],
+            relations: ['items'],
+            where: {
+                userId,
+                id: invoiceId
+            }
+        })).items
     }
 }
