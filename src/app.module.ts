@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
 
+import { join } from 'path';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,7 +19,6 @@ import { AuthModule } from './auth/auth.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { ClientsModule } from './clients/clients.module';
 import { InvoiceAppSeederModule } from './invoice-app-seeder/invoice-app-seeder.module';
-import { join } from 'path';
 
 
 @Module({

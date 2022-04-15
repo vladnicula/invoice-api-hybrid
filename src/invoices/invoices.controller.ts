@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Res, Req, UseGuards, Query } from '@nestjs
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
+
+import { SortOrder } from 'src/common/entity/graphql-sort-order';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
 
 import { InvoicesService } from './invoices.service';
@@ -11,11 +13,6 @@ export enum SortBy {
     DueDate = 'dueDate',
     Total = 'total',
     CompanyName = 'companyName'
-}
-
-export enum SortOrder {
-    ASC='ASC',
-    DESC='DESC'
 }
 
 @ApiBearerAuth()

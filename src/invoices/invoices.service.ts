@@ -88,7 +88,7 @@ export class InvoicesService {
             )
         }
 
-        return { invoices: await invoicListingQuery.getRawMany(), total: totalMatches, skip, limit}
+        return { results: await invoicListingQuery.getRawMany(), total: totalMatches, skip, limit}
     }
 
     async create(userId: string, createInvoiceDTO: CreateInvoiceDTO) {
