@@ -1,9 +1,21 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ClientEntity } from 'src/clients/client.entity';
 import { UserEntity } from 'src/users/user.entity';
 import { InvoiceItemEntity } from './invoice-item.entity';
+
+
+@ObjectType()
+export class InvoiceListInfo {
+    @Field(type => Int)
+    total: number;
+    @Field(type => Int)
+    skip: number;
+    @Field(type => Int)
+    limit: number;
+    invoices: InvoiceEntity[]
+}
 
 @ObjectType()
 @Entity()

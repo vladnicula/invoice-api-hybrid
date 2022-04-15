@@ -19,6 +19,15 @@ export class ClientsService {
         return this.clientsRepository.find();
     }
 
+    async findByUserIdAndId(userId: string, id: string) {
+        return this.clientsRepository.findOne({
+            where: {
+                userId,
+                id
+            }
+        });
+    }
+
     async findByUserId(userId: string, params: {
         skip?: number, 
         limit?: number, 

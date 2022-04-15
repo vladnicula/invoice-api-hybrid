@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Res, Req, UseGuards, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
 
 import { InvoicesService } from './invoices.service';

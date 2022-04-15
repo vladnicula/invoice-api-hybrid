@@ -10,6 +10,13 @@ type InvoiceItemEntity {
   invoiceId: String!
 }
 
+type InvoiceListInfo {
+  total: Int!
+  skip: Int!
+  limit: Int!
+  invoices: [InvoiceEntity!]!
+}
+
 type InvoiceEntity {
   id: ID!
   date: String!
@@ -55,5 +62,10 @@ type Query {
   user(id: String!): UserEntity!
   users: [UserEntity!]!
   invoice(id: String!): InvoiceEntity!
-  invoices: [InvoiceEntity!]!
+  invoices(limit: Int = 10, skip: Int = 0, sort: SortOrder, sortBy: String, startDate: String, endDate: String, clientId: String): InvoiceListInfo!
+}
+
+enum SortOrder {
+  ASC
+  DESC
 }
