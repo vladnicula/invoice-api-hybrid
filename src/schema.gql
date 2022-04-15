@@ -48,6 +48,12 @@ type ClientEntity {
   address: String!
   user: UserEntity!
   userId: String!
+  invoices(limit: Int = 10, sort: SortOrder, sortBy: String, startDate: String, endDate: String): [InvoiceEntity!]!
+}
+
+enum SortOrder {
+  ASC
+  DESC
 }
 
 type UserCompanyEntityType {
@@ -73,9 +79,4 @@ type Query {
   invoices(limit: Int = 10, skip: Int = 0, sort: SortOrder, sortBy: String, startDate: String, endDate: String, clientId: String): InvoiceListInfo!
   client(id: String!): ClientEntity!
   clients(limit: Int = 10, skip: Int = 0, sort: SortOrder, sortBy: String): ClientListInfo!
-}
-
-enum SortOrder {
-  ASC
-  DESC
 }

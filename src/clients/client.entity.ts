@@ -49,7 +49,6 @@ export class ClientEntity {
   @Column()
   userId: string;
 
-  @HideField()
   @OneToMany((type) => InvoiceEntity, invocie => invocie.client)
   invoices: InvoiceEntity[];
 

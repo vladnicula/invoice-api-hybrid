@@ -40,9 +40,10 @@ export class InvoicesService {
         startDate?: string, 
         endDate?: string, 
         clientId?: string, 
+        selectFields?: (keyof InvoiceEntity)[]
     }) {
         const {
-            skip = 0, limit = 100, sort, sortBy, startDate, endDate, clientId
+            skip = 0, limit = 100, sort, sortBy, startDate, endDate, clientId, selectFields
         } = params;
 
         let invoicListingQuery = this.invoicesRepository
