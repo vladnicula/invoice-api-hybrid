@@ -41,11 +41,13 @@ export class AuthController {
     @Get('profile')
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
-    getProfile(@Req() req: Request) {
-      return req.user;
+    async getProfile(@Req() req: Request) {
+      const reqUser = req.user as { id: string }
+      const user = await this.usersService.findOne(reqUser.id);
+      return user;
     }
     
-    @Patch('/profile')
+    @Patch('profile')
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @ApiBody({ type: UpdateUserDTO })

@@ -7,4 +7,3 @@ export class UpdateUserDTO {
     password: string;
     company?: UserCompanyEntityType
 }
-    

@@ -83,6 +83,9 @@ export class InvoiceAppSeederService {
     }
 
     async cleanup () {
+        // remove all for now
+        await this.usersService.removeAll()
+
         await this.usersService.removeByEmail(ANA_USER.email)
         await this.usersService.removeByEmail(VLAD_USER.email)
     }

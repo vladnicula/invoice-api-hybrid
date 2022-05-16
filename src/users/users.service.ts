@@ -42,6 +42,10 @@ export class UsersService {
         });
     }
 
+    async removeAll () {
+        await this.usersRepository.delete({})
+    }
+
     async create(userDTO: CreateUserDTO) {
         const newUser = await this.usersRepository.create()
         newUser.firstName = userDTO.firstName;
