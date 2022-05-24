@@ -1,3 +1,7 @@
+## Env file
+
+Make sure to copy `.env.example` into `.env`
+
 ## Migrations
 
 TLDR: 
