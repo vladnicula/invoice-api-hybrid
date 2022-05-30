@@ -1,5 +1,5 @@
 export class CreateClientDTO {
-  constructor (params?: {
+  constructor(params?: {
     name: string;
     contactName: string;
     contactEmail: string;
@@ -9,7 +9,7 @@ export class CreateClientDTO {
   }) {
     params ? Object.assign(this, params) : null;
   }
-  
+
   name: string;
   contactName: string;
   contactEmail: string;

@@ -8,135 +8,165 @@ import { InvoiceEntity } from './invoice.entity';
 
 @Injectable()
 export class InvoicesService {
+  @InjectRepository(InvoiceEntity)
+  private invoicesRepository: Repository<InvoiceEntity>;
 
-    @InjectRepository(InvoiceEntity)
-    private invoicesRepository: Repository<InvoiceEntity>
+  @InjectRepository(ClientEntity)
+  private clientsRepository: Repository<ClientEntity>;
 
-    @InjectRepository(ClientEntity)
-    private clientsRepository: Repository<ClientEntity>
+  findAll(): Promise<InvoiceEntity[]> {
+    return this.invoicesRepository.find();
+  }
 
-    findAll(): Promise<InvoiceEntity[]> {
-        return this.invoicesRepository.find();
+  async findById(id: string) {
+    return this.invoicesRepository.findOne(id);
+  }
+
+  async findByUserIdAndId(userId: string, id: string) {
+    return this.invoicesRepository.findOne({
+      where: {
+        id,
+        userId,
+      },
+    });
+  }
+
+  async findByUserId(
+    userId: string,
+    params: {
+      skip?: number;
+      limit?: number;
+      sort?: 'ASC' | 'DESC';
+      sortBy?: string;
+      startDate?: string;
+      endDate?: string;
+      clientId?: string;
+      selectFields?: (keyof InvoiceEntity)[];
+    },
+  ) {
+    const {
+      skip = 0,
+      limit = 100,
+      sort,
+      sortBy,
+      startDate,
+      endDate,
+      clientId,
+      selectFields,
+    } = params;
+
+    let invoicListingQuery = this.invoicesRepository
+      .createQueryBuilder('invoices')
+      .select('invoices.id', 'id')
+      .addSelect('invoices.date', 'date')
+      .addSelect('invoices.dueDate', 'dueDate')
+      .addSelect('invoices.total', 'total')
+      .addSelect('clients.name', 'companyName')
+      .addSelect('clients.id', 'clientId')
+      .addSelect('clients.contactName', 'contactName')
+      .addSelect('clients.contactEmail', 'contactEmail')
+      .where('invoices.userId = :userId', { userId: userId });
+
+    if (startDate) {
+      invoicListingQuery = invoicListingQuery.andWhere(
+        'invoices.date >= :startDate',
+        { startDate },
+      );
     }
 
-    async findById (id: string) {
-        return this.invoicesRepository.findOne(id)
+    if (endDate) {
+      invoicListingQuery = invoicListingQuery.andWhere(
+        'invoices.date < :endDate',
+        { endDate },
+      );
     }
 
-    async findByUserIdAndId (userId: string, id: string) {
-        return this.invoicesRepository.findOne({
-            where: {
-                id,
-                userId
-            }
-        })
+    if (clientId) {
+      invoicListingQuery = invoicListingQuery.andWhere(
+        'invoices.clientId = :clientId',
+        { clientId },
+      );
     }
 
-    async findByUserId(userId: string, params: {
-        skip?: number,
-        limit?: number,
-        sort?: "ASC" | "DESC",
-        sortBy?: string,
-        startDate?: string, 
-        endDate?: string, 
-        clientId?: string, 
-        selectFields?: (keyof InvoiceEntity)[]
-    }) {
-        const {
-            skip = 0, limit = 100, sort, sortBy, startDate, endDate, clientId, selectFields
-        } = params;
+    invoicListingQuery = invoicListingQuery.leftJoin(
+      'client_entity',
+      'clients',
+      'clients.id=invoices.clientId',
+    );
 
-        let invoicListingQuery = this.invoicesRepository
-            .createQueryBuilder('invoices')
-            .select("invoices.id", 'id')
-            .addSelect("invoices.date", 'date')
-            .addSelect("invoices.dueDate", 'dueDate')
-            .addSelect("invoices.total", 'total')
-            .addSelect("clients.name", 'companyName')
-            .addSelect("clients.id", 'clientId')
-            .addSelect("clients.contactName", 'contactName')
-            .addSelect("clients.contactEmail", 'contactEmail')
-            .where("invoices.userId = :userId", { userId: userId} )
+    const totalMatches = await invoicListingQuery.getCount();
 
-        if ( startDate ) {
-            invoicListingQuery = invoicListingQuery
-                .andWhere("invoices.date >= :startDate", {startDate})
-        }
+    invoicListingQuery = invoicListingQuery.offset(skip).limit(limit);
 
-        if ( endDate ) {
-            invoicListingQuery = invoicListingQuery
-                .andWhere("invoices.date < :endDate", {endDate})
-        }
-
-        if ( clientId ) {
-            invoicListingQuery = invoicListingQuery
-                .andWhere("invoices.clientId = :clientId", {clientId})
-        }
-
-        invoicListingQuery = invoicListingQuery    
-            .leftJoin('client_entity', 'clients', 'clients.id=invoices.clientId')
-
-        const totalMatches = await invoicListingQuery.getCount();
-
-        invoicListingQuery = invoicListingQuery    
-            .offset(skip)
-            .limit(limit)
-
-
-        if ( sortBy ) {
-            invoicListingQuery = invoicListingQuery.orderBy(
-                sortBy, sort
-            )
-        }
-
-        return { results: await invoicListingQuery.getRawMany(), total: totalMatches, skip, limit}
+    if (sortBy) {
+      invoicListingQuery = invoicListingQuery.orderBy(sortBy, sort);
     }
 
-    async create(userId: string, createInvoiceDTO: CreateInvoiceDTO) {
-        let newInvoice: InvoiceEntity;
-        await getManager().transaction(async (transactionalEntityManager) => {
-            newInvoice = await transactionalEntityManager.create(InvoiceEntity)
-            newInvoice.userId = userId;
-            newInvoice.clientId = createInvoiceDTO.clientId;
-            newInvoice.date = createInvoiceDTO.dateTS;
-            newInvoice.dueDate = createInvoiceDTO.dueDateTS;
-            newInvoice.total = createInvoiceDTO.items.reduce((acc, item) => {
-                return acc + item.price
-            }, 0)
-            await transactionalEntityManager.save(newInvoice)
-            for ( let i = 0; i < createInvoiceDTO.items.length; i += 1 ) {
-                const itItem = createInvoiceDTO.items[i];
-                const invoiceItem = await transactionalEntityManager.create(InvoiceItemEntity)
-                invoiceItem.description = itItem.description
-                invoiceItem.price = itItem.price
-                invoiceItem.invoiceId = newInvoice.id;
-                await transactionalEntityManager.save(invoiceItem)
-            }
-            await transactionalEntityManager.save(newInvoice)
-        })
-        
-        return newInvoice;
-    }
+    return {
+      results: await invoicListingQuery.getRawMany(),
+      total: totalMatches,
+      skip,
+      limit,
+    };
+  }
 
-    async getClientOfInvoiceByUserIdAndInvoiceId (userId: string, invoiceId: string) {
-        return (await this.invoicesRepository.findOneOrFail({
-            select: ['id', 'client'],
-            relations: ['client'],
-            where: {
-                userId,
-                id: invoiceId
-            }
-        })).client
-    }
+  async create(userId: string, createInvoiceDTO: CreateInvoiceDTO) {
+    let newInvoice: InvoiceEntity;
+    await getManager().transaction(async (transactionalEntityManager) => {
+      newInvoice = await transactionalEntityManager.create(InvoiceEntity);
+      newInvoice.userId = userId;
+      newInvoice.clientId = createInvoiceDTO.clientId;
+      newInvoice.date = createInvoiceDTO.dateTS;
+      newInvoice.dueDate = createInvoiceDTO.dueDateTS;
+      newInvoice.total = createInvoiceDTO.items.reduce((acc, item) => {
+        return acc + item.price;
+      }, 0);
+      await transactionalEntityManager.save(newInvoice);
+      for (let i = 0; i < createInvoiceDTO.items.length; i += 1) {
+        const itItem = createInvoiceDTO.items[i];
+        const invoiceItem = await transactionalEntityManager.create(
+          InvoiceItemEntity,
+        );
+        invoiceItem.description = itItem.description;
+        invoiceItem.price = itItem.price;
+        invoiceItem.invoiceId = newInvoice.id;
+        await transactionalEntityManager.save(invoiceItem);
+      }
+      await transactionalEntityManager.save(newInvoice);
+    });
 
-    async getItemsOfInvoiceByUserIdAndInvoiceId (userId: string, invoiceId: string) {
-        return (await this.invoicesRepository.findOneOrFail({
-            select: ['id', 'items'],
-            relations: ['items'],
-            where: {
-                userId,
-                id: invoiceId
-            }
-        })).items
-    }
+    return newInvoice;
+  }
+
+  async getClientOfInvoiceByUserIdAndInvoiceId(
+    userId: string,
+    invoiceId: string,
+  ) {
+    return (
+      await this.invoicesRepository.findOneOrFail({
+        select: ['id', 'client'],
+        relations: ['client'],
+        where: {
+          userId,
+          id: invoiceId,
+        },
+      })
+    ).client;
+  }
+
+  async getItemsOfInvoiceByUserIdAndInvoiceId(
+    userId: string,
+    invoiceId: string,
+  ) {
+    return (
+      await this.invoicesRepository.findOneOrFail({
+        select: ['id', 'items'],
+        relations: ['items'],
+        where: {
+          userId,
+          id: invoiceId,
+        },
+      })
+    ).items;
+  }
 }

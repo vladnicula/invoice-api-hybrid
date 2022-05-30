@@ -1,4 +1,3 @@
-
 import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -21,7 +20,6 @@ import { ClientsModule } from './clients/clients.module';
 import { InvoiceAppSeederModule } from './invoice-app-seeder/invoice-app-seeder.module';
 import { ClientInvoicesAggregateModule } from './client-invoices-aggregate/client-invoices-aggregate.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,7 +27,7 @@ import { ClientInvoicesAggregateModule } from './client-invoices-aggregate/clien
     }),
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 10
+      limit: 10,
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

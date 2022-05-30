@@ -9,7 +9,9 @@ describe('ClientsInvoicesAggregateResolver', () => {
       providers: [ClientsInvoicesAggregateResolver],
     }).compile();
 
-    resolver = module.get<ClientsInvoicesAggregateResolver>(ClientsInvoicesAggregateResolver);
+    resolver = module.get<ClientsInvoicesAggregateResolver>(
+      ClientsInvoicesAggregateResolver,
+    );
   });
 
   it('should be defined', () => {

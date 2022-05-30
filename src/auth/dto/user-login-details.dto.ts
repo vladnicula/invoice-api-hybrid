@@ -1,1 +1,4 @@
-export class UserLoginDetailsDTO { username: string; password: string }
+export class UserLoginDetailsDTO {
+  username: string;
+  password: string;
+}

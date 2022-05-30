@@ -5,6 +5,6 @@ import { ClientInvoicesAggregateResolver } from './client-invoices-aggregate.res
 
 @Module({
   imports: [ClientsModule, InvoicesModule],
-  providers: [ClientInvoicesAggregateResolver]
+  providers: [ClientInvoicesAggregateResolver],
 })
 export class ClientInvoicesAggregateModule {}

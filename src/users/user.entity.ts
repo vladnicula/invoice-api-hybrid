@@ -15,8 +15,8 @@ export class UserCompanyEntityType {
 @ObjectType()
 @Entity()
 export class UserEntity {
-  @Field(type => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @Field((type) => ID)
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   // @Field(type => String)
@@ -40,10 +40,10 @@ export class UserEntity {
   company: UserCompanyEntityType;
 
   @HideField()
-  @OneToMany((type) => ClientEntity, client => client.user)
-  clients: ClientEntity[]
+  @OneToMany((type) => ClientEntity, (client) => client.user)
+  clients: ClientEntity[];
 
   @HideField()
-  @OneToMany((type) => InvoiceEntity, invoice => invoice.user)
-  invoices: InvoiceEntity[]
+  @OneToMany((type) => InvoiceEntity, (invoice) => invoice.user)
+  invoices: InvoiceEntity[];
 }

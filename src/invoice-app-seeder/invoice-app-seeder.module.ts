@@ -8,6 +8,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   providers: [InvoiceAppSeederService],
   controllers: [InvoiceAppSeederController],
-  imports: [ClientsModule, InvoicesModule, UsersModule]
+  imports: [ClientsModule, InvoicesModule, UsersModule],
 })
 export class InvoiceAppSeederModule {}

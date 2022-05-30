@@ -5,22 +5,22 @@ import { InvoiceEntity } from './invoice.entity';
 @ObjectType()
 @Entity()
 export class InvoiceItemEntity {
-  @Field(type => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @Field((type) => ID)
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   description: string;
-  
+
   @Column('float')
-  price: number
+  price: number;
 
   // relations
-  @ManyToOne((type) => InvoiceEntity, invoice => invoice, {
-    onDelete: "CASCADE"
+  @ManyToOne((type) => InvoiceEntity, (invoice) => invoice, {
+    onDelete: 'CASCADE',
   })
   invoice: InvoiceEntity;
-  
+
   @Column()
   invoiceId: string;
 }

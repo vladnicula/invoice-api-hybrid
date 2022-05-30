@@ -9,7 +9,9 @@ describe('InvoiceAppSeederController', () => {
       controllers: [InvoiceAppSeederController],
     }).compile();
 
-    controller = module.get<InvoiceAppSeederController>(InvoiceAppSeederController);
+    controller = module.get<InvoiceAppSeederController>(
+      InvoiceAppSeederController,
+    );
   });
 
   it('should be defined', () => {
