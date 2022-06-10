@@ -7,8 +7,15 @@ import {
   Req,
   UseGuards,
   Query,
+  Param,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
 
@@ -66,6 +73,14 @@ export class InvoicesController {
       clientId,
     });
     return res.json(results);
+  }
+
+  @Get('/:id')
+  @ApiParam({ name: 'id', required: true })
+  async getClient(@Param('id') id, @Req() req: Request, @Res() res: Response) {
+    const userId = (req.user as { id: string }).id;
+    const response = await this.invoicesService.findByUserIdAndId(userId, id);
+    return res.json(response);
   }
 
   @Post('/')

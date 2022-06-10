@@ -24,6 +24,7 @@ export class InvoicesService {
 
   async findByUserIdAndId(userId: string, id: string) {
     return this.invoicesRepository.findOne({
+      relations: ['items', 'client'],
       where: {
         id,
         userId,

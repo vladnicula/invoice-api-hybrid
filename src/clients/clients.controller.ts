@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -12,7 +13,13 @@ import {
 import { ClientsService } from './clients.service';
 import { Response, Request } from 'express';
 import { CreateClientDTO } from './dto/create-client.dto';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
 import { SortOrder } from 'src/common/entity/graphql-sort-order';
 
@@ -56,6 +63,14 @@ export class ClientsController {
       sort: parsedSort,
       sortBy,
     });
+    return res.json(response);
+  }
+
+  @Get('/:id')
+  @ApiParam({ name: 'id', required: true })
+  async getClient(@Param('id') id, @Req() req: Request, @Res() res: Response) {
+    const userId = (req.user as { id: string }).id;
+    const response = await this.clientsService.findByUserIdAndId(userId, id);
     return res.json(response);
   }
 
