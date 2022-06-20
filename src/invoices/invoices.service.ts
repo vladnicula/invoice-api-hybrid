@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientEntity } from 'src/clients/client.entity';
-import { FindManyOptions, getManager, Repository } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
+import { UpdateInvoiceDTO } from './dto/update-invoice.dto';
 import { InvoiceItemEntity } from './invoice-item.entity';
 import { InvoiceEntity } from './invoice.entity';
 
@@ -53,7 +54,7 @@ export class InvoicesService {
       startDate,
       endDate,
       clientId,
-      selectFields,
+      // selectFields,
     } = params;
 
     let invoicListingQuery = this.invoicesRepository
@@ -137,6 +138,44 @@ export class InvoicesService {
     });
 
     return newInvoice;
+  }
+
+  async update(userId: string, updateInvoiceDTO: UpdateInvoiceDTO) {
+    let updatedInvoice: InvoiceEntity;
+    await getManager().transaction(async (transactionalEntityManager) => {
+      updatedInvoice = await transactionalEntityManager.findOne(InvoiceEntity, {
+        where: {
+          id: updateInvoiceDTO.id,
+        },
+        relations: ['items'],
+      });
+      updatedInvoice.userId = userId;
+      updatedInvoice.clientId = updateInvoiceDTO.clientId;
+      updatedInvoice.date = updateInvoiceDTO.dateTS;
+      updatedInvoice.dueDate = updateInvoiceDTO.dueDateTS;
+      updatedInvoice.total = updateInvoiceDTO.items.reduce((acc, item) => {
+        return acc + item.price;
+      }, 0);
+
+      for (let i = 0; i < updatedInvoice.items.length; i += 1) {
+        await transactionalEntityManager.remove(updatedInvoice.items[i]);
+      }
+
+      await transactionalEntityManager.save(updatedInvoice);
+
+      for (let i = 0; i < updateInvoiceDTO.items.length; i += 1) {
+        const itItem = updateInvoiceDTO.items[i];
+        const invoiceItem = await transactionalEntityManager.create(
+          InvoiceItemEntity,
+        );
+        invoiceItem.description = itItem.description;
+        invoiceItem.price = itItem.price;
+        invoiceItem.invoiceId = updateInvoiceDTO.id;
+        await transactionalEntityManager.save(invoiceItem);
+      }
+    });
+
+    return updatedInvoice;
   }
 
   async getClientOfInvoiceByUserIdAndInvoiceId(

@@ -2,10 +2,8 @@ import faker from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
 import { ClientsService } from 'src/clients/clients.service';
 import { CreateClientDTO } from 'src/clients/dto/create-client.dto';
-import {
-  CreateInvoiceDTO,
-  CreateInvoiceItemsDTO,
-} from 'src/invoices/dto/create-invoice.dto';
+import { CreateInvoiceDTO } from 'src/invoices/dto/create-invoice.dto';
+import { InvoiceItemsDTO } from 'src/invoices/dto/invoice-item.dto';
 import { InvoicesService } from 'src/invoices/invoices.service';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -76,7 +74,7 @@ export class InvoiceAppSeederService {
 
     Array.from({ length: Math.random() * 6 }).forEach(() => {
       newInvoiceDTO.items.push(
-        new CreateInvoiceItemsDTO({
+        new InvoiceItemsDTO({
           description: faker.commerce.productDescription(),
           price: parseFloat(faker.commerce.price()),
         }),
