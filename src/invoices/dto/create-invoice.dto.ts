@@ -1,18 +1,11 @@
-export class CreateInvoiceItemsDTO {
-  constructor(params?: { description: string; price: number }) {
-    params ? Object.assign(this, params) : null;
-  }
-
-  description: string;
-  price: number;
-}
+import { InvoiceItemsDTO } from './invoice-item.dto';
 
 export class CreateInvoiceDTO {
   constructor(params?: {
     clientId: string;
     dateTS: string;
     dueDateTS: string;
-    items: CreateInvoiceItemsDTO[];
+    items: InvoiceItemsDTO[];
   }) {
     params ? Object.assign(this, params) : null;
   }
@@ -20,5 +13,5 @@ export class CreateInvoiceDTO {
   clientId: string;
   dateTS: string;
   dueDateTS: string;
-  items: CreateInvoiceItemsDTO[];
+  items: InvoiceItemsDTO[];
 }

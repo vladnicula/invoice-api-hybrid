@@ -8,6 +8,7 @@ import {
   UseGuards,
   Query,
   Param,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,6 +22,7 @@ import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
 
 import { SortOrder } from 'src/common/entity/graphql-sort-order';
 import { CreateInvoiceDTO } from './dto/create-invoice.dto';
+import { UpdateInvoiceDTO } from './dto/update-invoice.dto';
 
 import { InvoicesService } from './invoices.service';
 
@@ -92,6 +94,18 @@ export class InvoicesController {
   ) {
     const userId = (req.user as { id: string }).id;
     const invoice = await this.invoicesService.create(userId, createInvoiceDTO);
+    return res.json({ invoice });
+  }
+
+  @Put('/')
+  @ApiBody({ type: UpdateInvoiceDTO })
+  async updateInvoice(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() updateInvoiceDTO: UpdateInvoiceDTO,
+  ) {
+    const userId = (req.user as { id: string }).id;
+    const invoice = await this.invoicesService.update(userId, updateInvoiceDTO);
     return res.json({ invoice });
   }
 }

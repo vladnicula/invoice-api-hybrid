@@ -3,8 +3,9 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
+  // ParseIntPipe,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -22,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/rest-jwt-auth.guard';
 import { SortOrder } from 'src/common/entity/graphql-sort-order';
+import { UpdateClientDTO } from './dto/update-client.dto';
 
 export enum SortOptions {
   Name = 'name',
@@ -91,5 +93,17 @@ export class ClientsController {
     const userId = (req.user as { id: string }).id;
     const clients = await this.clientsService.findByUserIdSummary(userId);
     return res.json({ clients });
+  }
+
+  @Put('/')
+  @ApiBody({ type: UpdateClientDTO })
+  async updateInvoice(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() updateClientDTO: UpdateClientDTO,
+  ) {
+    const userId = (req.user as { id: string }).id;
+    const client = await this.clientsService.update(userId, updateClientDTO);
+    return res.json({ client });
   }
 }
