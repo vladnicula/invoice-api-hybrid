@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
 import { ClientEntity } from './client.entity';
 import { CreateClientDTO } from './dto/create-client.dto';
+import { UpdateClientDTO } from './dto/update-client.dto';
 
 @Injectable()
 export class ClientsService {
@@ -128,5 +129,28 @@ export class ClientsService {
     newClient.userId = userId;
     await this.clientsRepository.save(newClient);
     return newClient;
+  }
+
+  async update(userId: string, updateClientDTO: UpdateClientDTO) {
+    const existingClient = await this.clientsRepository.findOne({
+      where: {
+        userId: userId,
+        id: updateClientDTO.id,
+      },
+    });
+
+    if (!existingClient) {
+      throw new Error(`Client ${updateClientDTO.id} not found`);
+    }
+
+    existingClient.contactName = updateClientDTO.contactName;
+    existingClient.contactEmail = updateClientDTO.contactEmail;
+    existingClient.name = updateClientDTO.name;
+    existingClient.address = updateClientDTO.address;
+    existingClient.iban = updateClientDTO.iban;
+    existingClient.taxCode = updateClientDTO.taxCode;
+
+    await this.clientsRepository.save(existingClient);
+    return existingClient;
   }
 }
