@@ -146,6 +146,7 @@ export class InvoicesService {
       updatedInvoice = await transactionalEntityManager.findOne(InvoiceEntity, {
         where: {
           id: updateInvoiceDTO.id,
+          userId,
         },
         relations: ['items'],
       });
