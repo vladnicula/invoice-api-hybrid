@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClientsInvoicesAggregateResolver } from './client-invoices-aggregate.resolver';
+import { ClientInvoicesAggregateResolver } from './client-invoices-aggregate.resolver';
 
 describe('ClientsInvoicesAggregateResolver', () => {
-  let resolver: ClientsInvoicesAggregateResolver;
+  let resolver: ClientInvoicesAggregateResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ClientsInvoicesAggregateResolver],
+      providers: [ClientInvoicesAggregateResolver],
     }).compile();
 
-    resolver = module.get<ClientsInvoicesAggregateResolver>(
-      ClientsInvoicesAggregateResolver,
+    resolver = module.get<ClientInvoicesAggregateResolver>(
+      ClientInvoicesAggregateResolver,
     );
   });
 
