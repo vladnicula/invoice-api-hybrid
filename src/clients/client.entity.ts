@@ -1,4 +1,12 @@
-import { Field, Float, HideField, ID, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  Float,
+  HideField,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
 import {
   Entity,
   Column,

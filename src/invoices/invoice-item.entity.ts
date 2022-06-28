@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { InvoiceEntity } from './invoice.entity';
 
@@ -23,4 +23,14 @@ export class InvoiceItemEntity {
 
   @Column()
   invoiceId: string;
+}
+
+@ObjectType()
+@InputType()
+export class InlinedInvoiceItemInput {
+  @Column()
+  description: string;
+
+  @Column('float')
+  price: number;
 }

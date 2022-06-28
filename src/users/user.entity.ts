@@ -1,10 +1,11 @@
-import { HideField, Field, ID, ObjectType } from '@nestjs/graphql';
+import { HideField, Field, ID, ObjectType, InputType } from '@nestjs/graphql';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { ClientEntity } from 'src/clients/client.entity';
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
 
 @ObjectType()
+@InputType('UserCompanyEntityTypeInput')
 export class UserCompanyEntityType {
   name: string;
   taxCode: string;
@@ -14,6 +15,7 @@ export class UserCompanyEntityType {
 
 @ObjectType()
 @Entity()
+@InputType('UserEntityInput')
 export class UserEntity {
   @Field((type) => ID)
   @PrimaryGeneratedColumn('uuid')

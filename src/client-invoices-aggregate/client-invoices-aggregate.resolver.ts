@@ -8,6 +8,7 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Mutation,
 } from '@nestjs/graphql';
 import { GraphQLCurrentUser } from 'src/auth/decorators/graphql-current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/graphql-jwt-auth.guard';
@@ -85,5 +86,26 @@ export class ClientInvoicesAggregateResolver {
     });
 
     return invoices.results;
+  }
+
+  @Mutation((returns) => Boolean)
+  async createClient(
+    @Args({ name: 'name', type: () => String }) name: string,
+    @Args({ name: 'contactName', type: () => String }) contactName: string,
+    @Args({ name: 'contactEmail', type: () => String }) contactEmail: string,
+    @Args({ name: 'taxCode', type: () => String }) taxCode: string,
+    @Args({ name: 'iban', type: () => String }) iban: string,
+    @Args({ name: 'address', type: () => String }) address: string,
+    @GraphQLCurrentUser() user: { id: string },
+  ) {
+    await this.clientsService.create(user.id, {
+      name,
+      contactName,
+      contactEmail,
+      taxCode,
+      iban,
+      address,
+    });
+    return true;
   }
 }
