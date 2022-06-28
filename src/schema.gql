@@ -72,22 +72,6 @@ type UserEntity {
   company: UserCompanyEntityType!
 }
 
-input UserCompanyEntityTypeInput {
-  name: String!
-  taxCode: String!
-  iban: String!
-  address: String!
-}
-
-input UserEntityInput {
-  id: ID!
-  firstName: String!
-  lastName: String!
-  email: String!
-  password: String!
-  company: UserCompanyEntityTypeInput!
-}
-
 type Query {
   user(id: String!): UserEntity!
   users: [UserEntity!]!

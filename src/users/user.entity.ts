@@ -5,7 +5,6 @@ import { ClientEntity } from 'src/clients/client.entity';
 import { InvoiceEntity } from 'src/invoices/invoice.entity';
 
 @ObjectType()
-@InputType('UserCompanyEntityTypeInput')
 export class UserCompanyEntityType {
   name: string;
   taxCode: string;
@@ -15,7 +14,6 @@ export class UserCompanyEntityType {
 
 @ObjectType()
 @Entity()
-@InputType('UserEntityInput')
 export class UserEntity {
   @Field((type) => ID)
   @PrimaryGeneratedColumn('uuid')
