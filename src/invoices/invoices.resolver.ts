@@ -4,10 +4,10 @@ import {
   Args,
   Resolver,
   Query,
-  registerEnumType,
   Info,
   ResolveField,
   Parent,
+  Mutation,
 } from '@nestjs/graphql';
 
 import * as queryFields from 'graphql-fields';
@@ -15,7 +15,10 @@ import * as queryFields from 'graphql-fields';
 import { GraphQLCurrentUser } from 'src/auth/decorators/graphql-current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/graphql-jwt-auth.guard';
 import { SortOrder } from 'src/common/entity/graphql-sort-order';
-import { InvoiceItemEntity } from './invoice-item.entity';
+import {
+  InvoiceItemEntity,
+  InlinedInvoiceItemInput,
+} from './invoice-item.entity';
 
 import { InvoiceEntity, InvoiceListInfo } from './invoice.entity';
 import { InvoicesService } from './invoices.service';
@@ -89,5 +92,26 @@ export class InvoicesResolver {
         invoice.id,
       );
     return items;
+  }
+
+  @Mutation((returns) => Boolean)
+  async createInvoice(
+    @Args({ name: 'clientId', type: () => String }) clientId: string,
+    @Args({ name: 'dateTS', type: () => String }) dateTS: string,
+    @Args({ name: 'dueDateTS', type: () => String }) dueDateTS: string,
+    @Args({
+      name: 'items',
+      type: () => [InlinedInvoiceItemInput],
+    })
+    items: InlinedInvoiceItemInput[],
+    @GraphQLCurrentUser() user: { id: string },
+  ) {
+    await this.invoicesService.create(user.id, {
+      clientId,
+      dateTS,
+      dueDateTS,
+      items,
+    });
+    return true;
   }
 }

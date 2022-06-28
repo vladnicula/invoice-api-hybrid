@@ -80,3 +80,13 @@ type Query {
   client(id: String!): ClientEntity!
   clients(limit: Int = 10, skip: Int = 0, sort: SortOrder, sortBy: String): ClientListInfo!
 }
+
+type Mutation {
+  createInvoice(clientId: String!, dateTS: String!, dueDateTS: String!, items: [InlinedInvoiceItemInput!]!): Boolean!
+  createClient(name: String!, contactName: String!, contactEmail: String!, taxCode: String!, iban: String!, address: String!): Boolean!
+}
+
+input InlinedInvoiceItemInput {
+  description: String!
+  price: Float!
+}

@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import {
   Entity,
   Column,
@@ -9,7 +9,10 @@ import {
 
 import { ClientEntity } from 'src/clients/client.entity';
 import { UserEntity } from 'src/users/user.entity';
-import { InvoiceItemEntity } from './invoice-item.entity';
+import {
+  InlinedInvoiceItemInput,
+  InvoiceItemEntity,
+} from './invoice-item.entity';
 
 @ObjectType()
 export class InvoiceListInfo {

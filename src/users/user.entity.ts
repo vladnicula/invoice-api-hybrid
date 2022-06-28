@@ -1,4 +1,4 @@
-import { HideField, Field, ID, ObjectType } from '@nestjs/graphql';
+import { HideField, Field, ID, ObjectType, InputType } from '@nestjs/graphql';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { ClientEntity } from 'src/clients/client.entity';
