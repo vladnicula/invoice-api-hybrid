@@ -68,14 +68,6 @@ export class ClientsController {
     return res.json(response);
   }
 
-  @Get('/:id')
-  @ApiParam({ name: 'id', required: true })
-  async getClient(@Param('id') id, @Req() req: Request, @Res() res: Response) {
-    const userId = (req.user as { id: string }).id;
-    const response = await this.clientsService.findByUserIdAndId(userId, id);
-    return res.json(response);
-  }
-
   @Post('/')
   @ApiBody({ type: CreateClientDTO })
   async createClient(
@@ -93,6 +85,14 @@ export class ClientsController {
     const userId = (req.user as { id: string }).id;
     const clients = await this.clientsService.findByUserIdSummary(userId);
     return res.json({ clients });
+  }
+
+  @Get('/:id')
+  @ApiParam({ name: 'id', required: true })
+  async getClient(@Param('id') id, @Req() req: Request, @Res() res: Response) {
+    const userId = (req.user as { id: string }).id;
+    const response = await this.clientsService.findByUserIdAndId(userId, id);
+    return res.json(response);
   }
 
   @Put('/')
